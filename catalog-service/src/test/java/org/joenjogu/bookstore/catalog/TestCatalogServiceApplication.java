@@ -1,4 +1,4 @@
-package org.joenjogu.catalog_service;
+package org.joenjogu.bookstore.catalog;
 
 import org.springframework.boot.SpringApplication;
 
