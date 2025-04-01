@@ -6,11 +6,10 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 
 import io.restassured.http.ContentType;
+import java.math.BigDecimal;
 import org.joenjogu.bookstore.catalog.domain.Product;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.jdbc.Sql;
-
-import java.math.BigDecimal;
 
 @Sql(scripts = "/test-data.sql")
 class CatalogServiceApplicationTests extends AbstractIntegrationTest {
