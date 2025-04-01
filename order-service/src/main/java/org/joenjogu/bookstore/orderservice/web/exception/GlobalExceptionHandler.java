@@ -1,14 +1,13 @@
 package org.joenjogu.bookstore.orderservice.web.exception;
 
+import java.net.URI;
+import java.time.Instant;
 import org.joenjogu.bookstore.orderservice.domain.OrderNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-
-import java.net.URI;
-import java.time.Instant;
 
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
