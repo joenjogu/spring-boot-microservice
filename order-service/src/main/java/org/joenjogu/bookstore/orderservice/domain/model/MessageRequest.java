@@ -1,4 +1,4 @@
-package org.joenjogu.bookstore.catalog.domain;
+package org.joenjogu.bookstore.orderservice.domain.model;
 
 public class MessageRequest {
     public String queueName;

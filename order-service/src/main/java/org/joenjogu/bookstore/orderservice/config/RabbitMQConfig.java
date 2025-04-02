@@ -33,9 +33,7 @@ public class RabbitMQConfig {
 
     @Bean
     Binding newOrdersQueueBinding() {
-        return BindingBuilder.bind(newOrdersQueue())
-                .to(directExchange())
-                .with(properties.newOrdersQueue());
+        return BindingBuilder.bind(newOrdersQueue()).to(directExchange()).with(properties.newOrdersQueue());
     }
 
     @Bean
@@ -45,9 +43,7 @@ public class RabbitMQConfig {
 
     @Bean
     Binding deliveredOrdersQueueBinding() {
-        return BindingBuilder.bind(deliveredOrdersQueue())
-                .to(directExchange())
-                .with(properties.deliveredOrdersQueue());
+        return BindingBuilder.bind(deliveredOrdersQueue()).to(directExchange()).with(properties.deliveredOrdersQueue());
     }
 
     @Bean
@@ -57,9 +53,7 @@ public class RabbitMQConfig {
 
     @Bean
     Binding cancelledOrdersQueueBinding() {
-        return BindingBuilder.bind(cancelledOrdersQueue())
-                .to(directExchange())
-                .with(properties.cancelledOrdersQueue());
+        return BindingBuilder.bind(cancelledOrdersQueue()).to(directExchange()).with(properties.cancelledOrdersQueue());
     }
 
     @Bean
@@ -69,9 +63,7 @@ public class RabbitMQConfig {
 
     @Bean
     Binding errorOrdersQueueBinding() {
-        return BindingBuilder.bind(errorOrdersQueue())
-                .to(directExchange())
-                .with(properties.errorOrdersQueue());
+        return BindingBuilder.bind(errorOrdersQueue()).to(directExchange()).with(properties.errorOrdersQueue());
     }
 
     @Bean
