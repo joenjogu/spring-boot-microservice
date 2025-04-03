@@ -1,6 +1,18 @@
 package org.joenjogu.bookstore.orderservice.web;
 
+import static org.joenjogu.bookstore.orderservice.testdata.TestDataFactory.createOrderRequestWithInvalidAddress;
+import static org.joenjogu.bookstore.orderservice.testdata.TestDataFactory.createOrderRequestWithInvalidCustomer;
+import static org.joenjogu.bookstore.orderservice.testdata.TestDataFactory.createOrderRequestWithNoItems;
+import static org.junit.jupiter.api.Named.named;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.stream.Stream;
 import org.joenjogu.bookstore.orderservice.domain.OrderService;
 import org.joenjogu.bookstore.orderservice.domain.SecurityService;
 import org.joenjogu.bookstore.orderservice.domain.model.CreateOrderRequest;
@@ -14,19 +26,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-
-import java.util.stream.Stream;
-
-import static org.joenjogu.bookstore.orderservice.testdata.TestDataFactory.createOrderRequestWithInvalidAddress;
-import static org.joenjogu.bookstore.orderservice.testdata.TestDataFactory.createOrderRequestWithInvalidCustomer;
-import static org.joenjogu.bookstore.orderservice.testdata.TestDataFactory.createOrderRequestWithNoItems;
-import static org.junit.jupiter.api.Named.named;
-import static org.junit.jupiter.params.provider.Arguments.arguments;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(OrderController.class)
 public class OrderControllerUnitTest {
@@ -51,12 +50,12 @@ public class OrderControllerUnitTest {
     @ParameterizedTest(name = "[{index}]-{0}")
     @MethodSource("createOrderRequestProvider")
     void shouldReturnBadRequestWhenInvalidOrderRequest(CreateOrderRequest request) throws Exception {
-        given(orderService.createOrder(eq("prasana"), any(CreateOrderRequest.class))).willReturn(null);
+        given(orderService.createOrder(eq("prasana"), any(CreateOrderRequest.class)))
+                .willReturn(null);
 
         mockMvc.perform(post("/api/orders")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request))
-                )
+                        .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest());
     }
 
@@ -64,7 +63,6 @@ public class OrderControllerUnitTest {
         return Stream.of(
                 arguments(named("Order with Invalid Customer", createOrderRequestWithInvalidCustomer())),
                 arguments(named("Order with Invalid Address", createOrderRequestWithInvalidAddress())),
-                arguments(named("Order with No Items", createOrderRequestWithNoItems()))
-        );
+                arguments(named("Order with No Items", createOrderRequestWithNoItems())));
     }
 }

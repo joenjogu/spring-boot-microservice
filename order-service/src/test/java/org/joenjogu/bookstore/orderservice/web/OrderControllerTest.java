@@ -1,14 +1,14 @@
 package org.joenjogu.bookstore.orderservice.web;
 
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.notNullValue;
+
 import io.restassured.http.ContentType;
 import org.joenjogu.bookstore.orderservice.AbstractIntegrationTest;
 import org.joenjogu.bookstore.orderservice.testdata.TestDataFactory;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-
-import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.notNullValue;
 
 class OrderControllerTest extends AbstractIntegrationTest {
 
