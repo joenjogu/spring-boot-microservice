@@ -4,6 +4,7 @@ import java.net.URI;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import org.joenjogu.bookstore.orderservice.domain.InvalidOrderException;
 import org.joenjogu.bookstore.orderservice.domain.OrderNotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -43,6 +44,17 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage());
         problemDetail.setTitle("Order Not Found");
         problemDetail.setType(NOT_FOUND_TYPE);
+        problemDetail.setProperty("service", SERVICE_NAME);
+        problemDetail.setProperty("error_category", "Generic");
+        problemDetail.setProperty("timestamp", Instant.now());
+        return problemDetail;
+    }
+
+    @ExceptionHandler(InvalidOrderException.class)
+    ProblemDetail handleInvalidOrderException(InvalidOrderException e) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage());
+        problemDetail.setTitle("Invalid order creation request");
+        problemDetail.setType(BAD_REQUEST_TYPE);
         problemDetail.setProperty("service", SERVICE_NAME);
         problemDetail.setProperty("error_category", "Generic");
         problemDetail.setProperty("timestamp", Instant.now());
