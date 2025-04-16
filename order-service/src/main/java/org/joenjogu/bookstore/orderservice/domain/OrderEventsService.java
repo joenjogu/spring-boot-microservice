@@ -44,7 +44,7 @@ public class OrderEventsService {
         OrderEventEntity orderEventEntity = new OrderEventEntity();
         orderEventEntity.setEventId(event.eventId());
         orderEventEntity.setOrderNumber(event.orderNumber());
-        orderEventEntity.setEventType(OrderEventType.ORDER_CREATED);
+        orderEventEntity.setEventType(OrderEventType.ORDER_DELIVERED);
         orderEventEntity.setCreatedAt(event.createdAt());
         orderEventEntity.setPayload(toJson(event));
         orderEventsRepository.save(orderEventEntity);
@@ -54,7 +54,7 @@ public class OrderEventsService {
         OrderEventEntity orderEventEntity = new OrderEventEntity();
         orderEventEntity.setEventId(event.eventId());
         orderEventEntity.setOrderNumber(event.orderNumber());
-        orderEventEntity.setEventType(OrderEventType.ORDER_CREATED);
+        orderEventEntity.setEventType(OrderEventType.ORDER_CANCELLED);
         orderEventEntity.setCreatedAt(event.createdAt());
         orderEventEntity.setPayload(toJson(event));
         orderEventsRepository.save(orderEventEntity);
@@ -64,7 +64,7 @@ public class OrderEventsService {
         OrderEventEntity orderEventEntity = new OrderEventEntity();
         orderEventEntity.setEventId(event.eventId());
         orderEventEntity.setOrderNumber(event.orderNumber());
-        orderEventEntity.setEventType(OrderEventType.ORDER_CREATED);
+        orderEventEntity.setEventType(OrderEventType.ORDER_PROCESSING_FAILED);
         orderEventEntity.setCreatedAt(event.createdAt());
         orderEventEntity.setPayload(toJson(event));
         orderEventsRepository.save(orderEventEntity);
@@ -75,6 +75,7 @@ public class OrderEventsService {
         List<OrderEventEntity> orderEventEntities = orderEventsRepository.findAll(sort);
         log.info("Found {} order events to be published", orderEventEntities.size());
         for (OrderEventEntity orderEventEntity : orderEventEntities) {
+            log.info("Publishing order {}", orderEventEntity.toString());
             publishEvent(orderEventEntity);
             orderEventsRepository.delete(orderEventEntity);
         }
