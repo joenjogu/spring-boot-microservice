@@ -1,5 +1,6 @@
 package org.joenjogu.bookstore.orderservice.domain;
 
+import java.util.List;
 import org.joenjogu.bookstore.orderservice.domain.model.CreateOrderRequest;
 import org.joenjogu.bookstore.orderservice.domain.model.CreateOrderResponse;
 import org.slf4j.Logger;
@@ -16,6 +17,8 @@ public class OrderService {
     private final OrderValidator orderValidator;
     private final OrderEventsService orderEventsService;
 
+    private static final List<String> DELIVERABLE_COUNTRIES = List.of("USA", "INDIA", "GERMANY");
+
     public OrderService(
             OrderRepository orderRepository, OrderValidator orderValidator, OrderEventsService orderEventsService) {
         this.orderRepository = orderRepository;
@@ -29,7 +32,39 @@ public class OrderService {
         newOrderEntity.setUserName(username);
         OrderEntity savedOrder = orderRepository.save(newOrderEntity);
         log.info("Created new order {}", savedOrder);
-        orderEventsService.save(OrderEventMapper.toOrderEvent(savedOrder));
+        orderEventsService.save(OrderEventMapper.buildOrderCreatedEvent(savedOrder));
         return new CreateOrderResponse(savedOrder.getOrderNumber());
+    }
+
+    public void processNewOrders() {
+        List<OrderEntity> newOrders = orderRepository.findByStatus(OrderStatus.NEW);
+        log.info("Found {} new orders to process", newOrders.size());
+        for (OrderEntity order : newOrders) {
+            process(order);
+        }
+    }
+
+    private void process(OrderEntity order) {
+        try {
+            if (canBeDelivered(order)) {
+                log.info("Delivering order {}", order);
+                orderRepository.updateOrderStatus(order.getOrderNumber(), OrderStatus.DELIVERED);
+                orderEventsService.save(OrderEventMapper.buildOrderDeliveredEvent(order));
+            } else {
+                log.info("Order can't be delivered {}", order);
+                orderRepository.updateOrderStatus(order.getOrderNumber(), OrderStatus.CANCELLED);
+                orderEventsService.save(OrderEventMapper.buildOrderCancelledEvent(
+                        order, "Cannot deliver to " + order.getAddress().country()));
+            }
+        } catch (Exception e) {
+            log.error("Error processing order {}", order, e);
+            orderRepository.updateOrderStatus(order.getOrderNumber(), OrderStatus.ERROR);
+            orderEventsService.save(
+                    OrderEventMapper.buildOrderErrorEvent(order, "Error processing order " + order.getOrderNumber()));
+        }
+    }
+
+    private boolean canBeDelivered(OrderEntity order) {
+        return DELIVERABLE_COUNTRIES.contains(order.getAddress().country().toUpperCase());
     }
 }
