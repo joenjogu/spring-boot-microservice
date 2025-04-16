@@ -52,13 +52,6 @@
 			<artifactId>resilience4j-spring-boot3</artifactId>
 			<version>${resilience4j.version}</version>
 		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-devtools</artifactId>
-			<scope>runtime</scope>
-			<optional>true</optional>
-		</dependency>
 		<dependency>
 			<groupId>io.micrometer</groupId>
 			<artifactId>micrometer-registry-prometheus</artifactId>
@@ -119,6 +112,19 @@
 			<artifactId>instancio-junit</artifactId>
 			<version>5.4.0</version>
 		</dependency>
+		<dependency>
+			<groupId>org.wiremock</groupId>
+			<artifactId>wiremock-standalone</artifactId>
+			<version>3.5.2</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.wiremock.integrations.testcontainers</groupId>
+			<artifactId>wiremock-testcontainers-module</artifactId>
+			<version>1.0-alpha-13</version>
+			<scope>test</scope>
+		</dependency>
+
 	</dependencies>
 
     <build>
