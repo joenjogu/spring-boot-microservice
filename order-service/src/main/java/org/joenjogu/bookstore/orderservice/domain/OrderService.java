@@ -14,18 +14,22 @@ public class OrderService {
     private static final Logger log = LoggerFactory.getLogger(OrderService.class);
     private final OrderRepository orderRepository;
     private final OrderValidator orderValidator;
+    private final OrderEventsService orderEventsService;
 
-    public OrderService(OrderRepository orderRepository, OrderValidator orderValidator) {
+    public OrderService(
+            OrderRepository orderRepository, OrderValidator orderValidator, OrderEventsService orderEventsService) {
         this.orderRepository = orderRepository;
         this.orderValidator = orderValidator;
+        this.orderEventsService = orderEventsService;
     }
 
     public CreateOrderResponse createOrder(String username, CreateOrderRequest orderRequest) {
         orderValidator.validate(orderRequest);
         OrderEntity newOrderEntity = OrderMapper.toEntity(orderRequest);
         newOrderEntity.setUserName(username);
-        OrderEntity saved = orderRepository.save(newOrderEntity);
-        log.info("Created new order {}", saved);
-        return new CreateOrderResponse(saved.getOrderNumber());
+        OrderEntity savedOrder = orderRepository.save(newOrderEntity);
+        log.info("Created new order {}", savedOrder);
+        orderEventsService.save(OrderEventMapper.toOrderEvent(savedOrder));
+        return new CreateOrderResponse(savedOrder.getOrderNumber());
     }
 }
