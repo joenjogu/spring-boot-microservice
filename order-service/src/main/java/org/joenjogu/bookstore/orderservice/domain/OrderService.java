@@ -1,8 +1,10 @@
 package org.joenjogu.bookstore.orderservice.domain;
 
 import java.util.List;
+import java.util.Optional;
 import org.joenjogu.bookstore.orderservice.domain.model.CreateOrderRequest;
 import org.joenjogu.bookstore.orderservice.domain.model.CreateOrderResponse;
+import org.joenjogu.bookstore.orderservice.web.controller.OrderDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -34,6 +36,17 @@ public class OrderService {
         log.info("Created new order {}", savedOrder);
         orderEventsService.save(OrderEventMapper.buildOrderCreatedEvent(savedOrder));
         return new CreateOrderResponse(savedOrder.getOrderNumber());
+    }
+
+    public List<OrderSummary> getOrdersByUsername(String username) {
+        log.info("Service orders by username {}", username);
+        return orderRepository.findByUserName(username);
+    }
+
+    public Optional<OrderDTO> getOrderByUsernameAndOrderNumber(String username, String orderNumber) {
+        return orderRepository
+                .findByUsernameAndOrderNumber(username, orderNumber)
+                .map(OrderMapper::toDTO);
     }
 
     public void processNewOrders() {

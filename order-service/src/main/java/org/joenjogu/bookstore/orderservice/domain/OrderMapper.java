@@ -3,8 +3,10 @@ package org.joenjogu.bookstore.orderservice.domain;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import org.joenjogu.bookstore.orderservice.domain.model.CreateOrderRequest;
 import org.joenjogu.bookstore.orderservice.domain.model.OrderItem;
+import org.joenjogu.bookstore.orderservice.web.controller.OrderDTO;
 
 class OrderMapper {
 
@@ -26,5 +28,20 @@ class OrderMapper {
         }
         newOrder.setOrderItems(items);
         return newOrder;
+    }
+
+    public static OrderDTO toDTO(OrderEntity orderEntity) {
+        Set<OrderItem> orderItems = orderEntity.getOrderItems().stream()
+                .map(item -> new OrderItem(item.getCode(), item.getName(), item.getPrice(), item.getQuantity()))
+                .collect(Collectors.toSet());
+        return new OrderDTO(
+                orderEntity.getOrderNumber(),
+                orderEntity.getUserName(),
+                orderItems,
+                orderEntity.getCustomer(),
+                orderEntity.getAddress(),
+                orderEntity.getStatus(),
+                orderEntity.getComments(),
+                orderEntity.getCreatedAt());
     }
 }
