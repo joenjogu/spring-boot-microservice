@@ -67,6 +67,8 @@ services:
       - RABBITMQ_PORT=5672
       - RABBITMQ_USERNAME=guest
       - RABBITMQ_PASSWORD=guest
+      - MAIL_HOST=mailhog
+      - MAIL_PORT=1025
     ports:
       - "8083:8083"
     healthcheck:
@@ -80,6 +82,8 @@ services:
         condition: service_healthy
       bookstore-rabbitmq:
         condition: service_healthy
+      mailhog:
+        condition: service_started
     deploy:
       resources:
         limits:
